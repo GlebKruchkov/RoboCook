@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <param name="robot_description" command="$(find xacro)/xacro '$(find kitchen_arm_sim)/urdf/simple_arm.urdf.xacro'" />
+
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" 
+          args="-param robot_description -urdf -model simple_arm -x 0 -y 0 -z 0.1" 
+          output="screen"/>
+
+    <node name="kitchen_arm_controller" pkg="kitchen_arm_sim" 
+          type="kitchen_arm_controller.py" output="screen"/>
+
+    <node name="test_commander" pkg="kitchen_arm_sim" 
+          type="test_commander.py" output="screen" launch-prefix="bash -c 'sleep 8; $0 $@'"/>
+
+</launch>
